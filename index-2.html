@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reposição – TATS Confeitaria</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>Reposição <span>TATS</span></h1>
+  <nav id="tabs">
+    <button data-tab="repor" class="on">Reposição</button>
+    <button data-tab="rel">Relatório</button>
+    <button data-tab="cfg">Produtos e mínimos</button>
+  </nav>
+</header>
+
+<main>
+<!-- ============ REPOSIÇÃO ============ -->
+<section id="tab-repor">
+  <div class="box">
+    <div class="row2">
+      <label>Data
+        <input type="date" id="data">
+      </label>
+      <button type="button" id="btnHoje" class="ghost">Hoje</button>
+    </div>
+
+    <label>Produto
+      <div class="prod">
+        <select id="produto"></select>
+        <span id="codigo" class="badge"></span>
+      </div>
+    </label>
+    <p id="hint" class="meta"></p>
+
+    <label>Estoque atual na prateleira
+      <input type="number" id="estoque" inputmode="numeric" min="0" step="any" placeholder="0">
+      <small id="hintEstoque"></small>
+    </label>
+    <label>Quantidade da reposição
+      <input type="number" id="repo" inputmode="numeric" min="0" step="any" placeholder="0">
+    </label>
+    <label>Desperdício (venceu ou estragou)
+      <input type="number" id="desp" inputmode="numeric" min="0" step="any" placeholder="0">
+    </label>
+
+    <div id="preview" class="preview"></div>
+    <button type="button" id="btnAdd" class="primary">Adicionar reposição</button>
+  </div>
+
+  <h2>Reposições de <span id="lblData"></span></h2>
+  <div id="listaHoje" class="scroll"></div>
+
+  <h2>O que produzir <small id="lblProd"></small></h2>
+  <div id="producao"></div>
+  <button type="button" id="btnPdf" class="primary">Gerar PDF de produção</button>
+</section>
+
+<!-- ============ RELATÓRIO ============ -->
+<section id="tab-rel" hidden>
+  <div class="box">
+    <div class="row2">
+      <label>De <input type="date" id="de"></label>
+      <label>Até <input type="date" id="ate"></label>
+    </div>
+    <div class="chips">
+      <button type="button" class="ghost" data-p="hoje">Hoje</button>
+      <button type="button" class="ghost" data-p="7">Últimos 7 dias</button>
+      <button type="button" class="ghost" data-p="mes">Este mês</button>
+    </div>
+    <button type="button" id="btnXlsx" class="primary">Exportar para o Excel</button>
+  </div>
+
+  <h2>Resumo do período</h2>
+  <div id="resumo" class="scroll"></div>
+
+  <h2>Detalhe por dia</h2>
+  <div id="detalhe" class="scroll"></div>
+  <p class="meta">"Vendido" = (o que ficou na prateleira na visita anterior) − (estoque atual) − (desperdício). Em branco = primeiro registro do produto, sem base para comparar. Valor negativo (vermelho) indica contagem a conferir.</p>
+</section>
+
+<!-- ============ PRODUTOS ============ -->
+<section id="tab-cfg" hidden>
+  <div class="box">
+    <h3>Como você conta o estoque?</h3>
+    <label class="radio"><input type="radio" name="modo" value="depois"> Já sem os vencidos/estragados (conto depois de retirá-los)</label>
+    <label class="radio"><input type="radio" name="modo" value="antes"> Contando tudo, inclusive os vencidos/estragados</label>
+  </div>
+
+  <h2>Produtos, códigos e mínimos</h2>
+  <p class="meta">Mínimo = quantidade mínima que deve haver na prateleira. O site calcula o que produzir a partir dele. Alterações são salvas ao sair do campo.</p>
+  <div id="cfgLista" class="scroll"></div>
+
+  <div class="box">
+    <h3>Adicionar produto</h3>
+    <label>Nome <input type="text" id="novoNome"></label>
+    <div class="row2">
+      <label>Código <input type="text" id="novoCod"></label>
+      <label>Mínimo <input type="number" id="novoMin" inputmode="numeric" min="0" step="any"></label>
+    </div>
+    <button type="button" id="btnNovo" class="primary">Adicionar produto</button>
+  </div>
+
+  <div class="box">
+    <h3>Cópia de segurança</h3>
+    <p class="meta">Os dados ficam salvos neste navegador, neste aparelho. Baixe uma cópia de vez em quando e use-a para levar os dados a outro aparelho.</p>
+    <div class="chips">
+      <button type="button" id="btnBackup" class="ghost">Baixar cópia (.json)</button>
+      <button type="button" id="btnRestore" class="ghost">Restaurar cópia</button>
+      <input type="file" id="fileRestore" accept=".json,application/json" hidden>
+    </div>
+  </div>
+</section>
+</main>
+
+<div id="toast" role="status"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<script src="produtos.js"></script>
+<script src="calc.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
